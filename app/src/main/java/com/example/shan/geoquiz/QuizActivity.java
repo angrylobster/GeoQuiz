@@ -9,16 +9,20 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import static java.lang.Math.round;
+
 public class QuizActivity extends AppCompatActivity {
 
     private static final String TAG = "QuizActivity";
     private static final String KEY_INDEX = "index";
+    private static final String TAG2 = "QuestionAnswered";
 
     private Button mTrueButton;
     private Button mFalseButton;
     private ImageButton mPreviousButton;
     private ImageButton mNextButton;
     private TextView mQuestionTextView;
+    private int mScore = 0;
 
     private Question[] mQuestionBank = new Question[] {
             new Question(R.string.question_afghanistan, true),
@@ -137,6 +141,22 @@ public class QuizActivity extends AppCompatActivity {
     private void updateQuestion(){
         int question = mQuestionBank[mCurrentIndex].getTextResID();
         mQuestionTextView.setText(question);
+        Log.d(TAG2, String.valueOf(mQuestionBank[mCurrentIndex].isQuestionAnswered()));
+        if (mQuestionBank[mCurrentIndex].isQuestionAnswered()){
+            disableAnswerButtons();
+        } else {
+            enableAnswerButtons();
+        }
+    }
+
+    private void disableAnswerButtons(){
+        mTrueButton.setEnabled(false);
+        mFalseButton.setEnabled(false);
+    }
+
+    private void enableAnswerButtons(){
+        mTrueButton.setEnabled(true);
+        mFalseButton.setEnabled(true);
     }
 
     private void checkAnswer(boolean userAnswer){
@@ -144,11 +164,30 @@ public class QuizActivity extends AppCompatActivity {
         int messageResID = 0;
 
         if(userAnswer == answerToQuestion){
+            mScore++;
             messageResID = R.string.correct_toast;
         } else {
             messageResID = R.string.incorrect_toast;
         }
-
         Toast.makeText(QuizActivity.this, messageResID, Toast.LENGTH_SHORT).show();
+
+        mQuestionBank[mCurrentIndex].setQuestionAnswered(true);
+        disableAnswerButtons();
+
+        if (allQuestionsAnswered()){
+            int percentageCorrect = (int) (((double)mScore / (double) mQuestionBank.length) * 100d);
+            Toast.makeText(QuizActivity.this,
+                    "Congratulations! You scored " + percentageCorrect + "% on the quiz!",
+                    Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private boolean allQuestionsAnswered(){
+        for (Question question : mQuestionBank){
+            if (!question.isQuestionAnswered()) {
+                return false;
+            }
+        }
+        return true;
     }
 }
