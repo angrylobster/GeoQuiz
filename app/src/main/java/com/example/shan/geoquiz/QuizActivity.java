@@ -26,7 +26,6 @@ public class QuizActivity extends AppCompatActivity {
     private ImageButton mNextButton;
     private TextView mQuestionTextView;
     private int mScore = 0;
-    private boolean mIsCheater;
 
     private Question[] mQuestionBank = new Question[] {
             new Question(R.string.question_afghanistan, true),
@@ -79,7 +78,6 @@ public class QuizActivity extends AppCompatActivity {
         mPreviousButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-                mIsCheater = false;
                 previousQuestion();
             }
         });
@@ -88,7 +86,6 @@ public class QuizActivity extends AppCompatActivity {
         mNextButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-                mIsCheater = false;
                 nextQuestion();
             }
         });
@@ -115,7 +112,7 @@ public class QuizActivity extends AppCompatActivity {
             if (data == null){
                 return;
             }
-            mIsCheater = CheatActivity.wasAnswerShown(data);
+            mQuestionBank[mCurrentIndex].setUserCheated(true);
         }
     }
 
@@ -196,7 +193,7 @@ public class QuizActivity extends AppCompatActivity {
         boolean answerToQuestion = mQuestionBank[mCurrentIndex].isAnswerTrue();
         int messageResID = 0;
 
-        if (mIsCheater){
+        if (mQuestionBank[mCurrentIndex].userCheated()){
             messageResID = R.string.judgement_toast;
         } else {
             if (userAnswer == answerToQuestion) {

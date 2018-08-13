@@ -7,11 +7,21 @@ public class Question implements Parcelable{
     private int mTextResID;
     private boolean mAnswerTrue;
     private boolean mQuestionAnswered;
+    private boolean mUserCheated;
 
     public Question(int textResID, boolean answerTrue) {
         mTextResID = textResID;
         mAnswerTrue = answerTrue;
         mQuestionAnswered = false;
+        mUserCheated = false;
+    }
+
+    public boolean userCheated() {
+        return mUserCheated;
+    }
+
+    public void setUserCheated(boolean userCheated) {
+        mUserCheated = userCheated;
     }
 
     protected Question(Parcel in) {
