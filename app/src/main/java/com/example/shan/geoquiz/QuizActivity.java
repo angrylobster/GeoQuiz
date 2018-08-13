@@ -17,6 +17,7 @@ public class QuizActivity extends AppCompatActivity {
     private static final String KEY_INDEX = "index";
     private static final String QUESTION_ANSWERED_INDEX = "question_answered_index";
     private static final String SCORE_INDEX = "score_index";
+    private static final String CHEAT_INDEX = "cheat_index";
     private static final int REQUEST_CODE_CHEAT = 0;
 
     private Button mTrueButton;
@@ -26,6 +27,7 @@ public class QuizActivity extends AppCompatActivity {
     private ImageButton mNextButton;
     private TextView mQuestionTextView;
     private int mScore = 0;
+    private int mCheatCounter = 3;
 
     private Question[] mQuestionBank = new Question[] {
             new Question(R.string.question_afghanistan, true),
@@ -48,6 +50,7 @@ public class QuizActivity extends AppCompatActivity {
             mCurrentIndex = savedInstanceState.getInt(KEY_INDEX, 0);
             mQuestionBank = (Question[]) savedInstanceState.getParcelableArray(QUESTION_ANSWERED_INDEX);
             mScore = savedInstanceState.getInt(SCORE_INDEX, 0);
+            mCheatCounter = savedInstanceState.getInt(CHEAT_INDEX, 0);
         }
 
         mQuestionTextView = (TextView) findViewById(R.id.question_text_view);
@@ -99,7 +102,9 @@ public class QuizActivity extends AppCompatActivity {
                 startActivityForResult(intent, REQUEST_CODE_CHEAT);
             }
         });
-
+        if (mCheatCounter <= 0){
+            mCheatButton.setEnabled(false);
+        }
         updateQuestion();
     }
 
@@ -113,6 +118,10 @@ public class QuizActivity extends AppCompatActivity {
                 return;
             }
             mQuestionBank[mCurrentIndex].setUserCheated(true);
+            mCheatCounter--;
+        }
+        if (mCheatCounter <= 0){
+            mCheatButton.setEnabled(false);
         }
     }
 
@@ -141,6 +150,7 @@ public class QuizActivity extends AppCompatActivity {
         savedInstanceState.putInt(KEY_INDEX, mCurrentIndex);
         savedInstanceState.putParcelableArray(QUESTION_ANSWERED_INDEX, mQuestionBank);
         savedInstanceState.putInt(SCORE_INDEX, mScore);
+        savedInstanceState.putInt(CHEAT_INDEX, mCheatCounter);
     }
 
     @Override
