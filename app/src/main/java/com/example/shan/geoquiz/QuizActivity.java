@@ -15,6 +15,8 @@ public class QuizActivity extends AppCompatActivity {
 
     private static final String TAG = "QuizActivity";
     private static final String KEY_INDEX = "index";
+    private static final String QUESTION_ANSWERED_INDEX = "question_answered_index";
+    private static final String SCORE_INDEX = "score_index";
     private static final int REQUEST_CODE_CHEAT = 0;
 
     private Button mTrueButton;
@@ -45,6 +47,8 @@ public class QuizActivity extends AppCompatActivity {
 
         if (savedInstanceState != null){
             mCurrentIndex = savedInstanceState.getInt(KEY_INDEX, 0);
+            mQuestionBank = (Question[]) savedInstanceState.getParcelableArray(QUESTION_ANSWERED_INDEX);
+            mScore = savedInstanceState.getInt(SCORE_INDEX, 0);
         }
 
         mQuestionTextView = (TextView) findViewById(R.id.question_text_view);
@@ -138,6 +142,8 @@ public class QuizActivity extends AppCompatActivity {
         super.onSaveInstanceState(savedInstanceState);
         Log.i(TAG, "onSaveInstanceState");
         savedInstanceState.putInt(KEY_INDEX, mCurrentIndex);
+        savedInstanceState.putParcelableArray(QUESTION_ANSWERED_INDEX, mQuestionBank);
+        savedInstanceState.putInt(SCORE_INDEX, mScore);
     }
 
     @Override
